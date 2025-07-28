@@ -52,6 +52,12 @@ class User extends Authenticatable
     }
 
 
+    // public function role()
+    // {
+    //     return $this->belongsTo();
+    // }
+
+
     public function studentProfile()
     {
 

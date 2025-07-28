@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->enum('role', ['admin', 'teacher', 'student'])->default('student');
+            $table->unsignedBigInteger('role_id')->after('id')->default(1);
+            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
         });
     }
 
@@ -22,7 +23,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            // Drop the foreign key first, then the column
+            $table->dropForeign(['role_id']);
+            $table->dropColumn('role_id');
         });
     }
 };
