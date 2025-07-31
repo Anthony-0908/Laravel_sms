@@ -51,6 +51,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function role() 
+    {
+        return $this->belongsTo(Role::class);
+    }
+
 
     // public function role()
     // {
@@ -58,18 +63,5 @@ class User extends Authenticatable
     // }
 
 
-    public function studentProfile()
-    {
-
-    }
-
-    public function teacherProfile()
-    {
-        return $this->hasOne(Teacher::class);
-    }
-
-    public function adminprofile()
-    {
-        return $this->hasOne(Admin::class);
-    }
+  
 }

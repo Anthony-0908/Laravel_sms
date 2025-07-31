@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-class StudentService
+class AdminService
 {
     /**
      * Create a new class instance.
@@ -12,4 +12,3 @@ class StudentService
         //
     }
 }
-?>php artisan make:class Services/MyCustomService

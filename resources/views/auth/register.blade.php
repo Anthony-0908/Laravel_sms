@@ -39,18 +39,18 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
-        {{-- <div class="mt-4">
-             <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+    <!-- Role Dropdown -->
+        <div class="mt-4">
+            <x-input-label for="role_id" :value="__('Select Role')" />
 
-             <x-dropdown id="role" class="block mt-1 w-full">
+            <select name="role_id" id="role_id" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
+                <option value="" disabled selected>-- Choose a role --</option>
+                @foreach($roles as $role)
+                    <option value="{{ $role->id }}">{{ ucfirst($role->name) }}</option>
+                @endforeach
+            </select>
 
-             </x-dropdown> --}}
-
-            {{-- <x-dropdown id="role" class="block mt-1 w-full"
-                            type="text"
-                            name="role" required  />
-
-            <x-input-error :messages="$errors->get('role')" class="mt-2" /> --}}
+            <x-input-error :messages="$errors->get('role_id')" class="mt-2" />
         </div>
 
         <div class="flex items-center justify-end mt-4">
