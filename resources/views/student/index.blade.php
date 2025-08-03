@@ -48,7 +48,7 @@
                         </button>
                         <button type="submit"
                                 class="bg-blue-600 hover:bg-blue-700 text-black px-4 py-2 rounded">
-                            Register
+                            Registers
                         </button>
                     </div>
                 </form>
