@@ -12,4 +12,4 @@ class StudentService
         //
     }
 }
-?>php artisan make:class Services/MyCustomService
+?>
