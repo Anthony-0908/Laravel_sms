@@ -17,12 +17,13 @@ class DatabaseSeeder extends Seeder
     {
             $this->call([
             RoleSeeder::class,
+            StudentStatusSeeder::class,
         ]);
         // User::factory(1)->create();
 
         User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'testUser@yopmail.com',
             'password'=> Hash::make('Password@123'),
         ]);
     }
