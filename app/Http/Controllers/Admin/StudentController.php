@@ -95,6 +95,9 @@ class StudentController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = User::findorFail($id);
+        $user->delete();
+
+        return redirect()->route('students.index');
     }
 }
