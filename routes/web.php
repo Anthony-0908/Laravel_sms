@@ -16,6 +16,7 @@ Route::get('/student',[StudentController::class,'index']);
 
 Route::middleware('auth')->group(function() {
     Route::get('/student',[StudentController::class,'index'])->name('students.index');
+    Route::get('/students',[StudentController::class,'getStudents'])->name('students.data');
     Route::post('/students', [StudentController::class, 'store'])->name('students.store');
 });
 
