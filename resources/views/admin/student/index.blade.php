@@ -1,9 +1,12 @@
 <x-app-layout>
     <div class="p-6" x-data="studentForm()">
         <!-- Button to open the modal -->
-        <button @click="open = true" class="bg-blue-600 text-white px-4 py-2 rounded">
+        <div class="w-full bg-gray-200">
+            <button @click="open = true" class="bg-blue-600 text-white px-4 py-2 rounded">
             Register New Student
-        </button>
+            </button>
+        </div>
+        
 
         @include('admin.student.create-student') {{-- This has the modal HTML --}}
     
@@ -15,46 +18,36 @@
             </div>
         </template>
 
-
-    <table class="table" id="users-table">
-   <table id="users-table" class="min-w-full divide-y divide-gray-200 border border-gray-300 rounded-md shadow-sm">
-    <thead class="bg-gray-100">
-        <tr>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                #
-            </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Name
-            </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Email
-            </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Action
-            </th>
-        </tr>
-    </thead>
-    <tbody class="bg-white divide-y divide-gray-200">
-        {{-- DataTables will inject rows here --}}
-    </tbody>
+    <div class="w-full flex items-center justify-center min-h-screen p-6">
+        <table id="users-table" class="min-w-full h-full divide-y divide-gray-200 border w-full border-gray-300 rounded-md shadow-sm">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">#</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Name</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Action</th>
+            </tr>
+        </thead>
+    <tbody class="bg-white divide-y divide-gray-200"></tbody>
 </table>
+    </div>
+
     </div>
 
     <!-- AlpineJS Component Script -->
     <script>
-
-    $('#users-table').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: '{{ route('students.data') }}',
-        columns: [
-            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-            { data: 'name', name: 'name' },
-            { data: 'email', name: 'email' },
-            { data: 'action', name: 'action', orderable: false, searchable: false },
-        ],
-        dom: 'rt<"flex justify-between items-center mt-4"ip>', // minimal DOM elements for paging info & pagination styled by Tailwind
-    });
+   $('#users-table').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: '{{ route('students.data') }}',
+    columns: [
+        { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+        { data: 'names', name: 'name' },
+        { data: 'email', name: 'email' },
+        { data: 'action', name: 'action', orderable: false, searchable: false },
+    ],
+    dom: 'rt<"flex justify-between items-center mt-4"ip>',
+});
 
         function studentForm() {
             return {
