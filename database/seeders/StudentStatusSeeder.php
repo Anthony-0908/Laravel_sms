@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB; // ✅ Import DB facade
 
 class StudentStatusSeeder extends Seeder
 {
@@ -12,7 +12,7 @@ class StudentStatusSeeder extends Seeder
      */
     public function run(): void
     {
-        DB:table('student_statuses')->insert([
+        DB::table('student_statuses')->insert([
             ['name' => 'Enrolled'],
             ['name' => 'Graduated'],
             ['name' => 'Transferred'],
