@@ -6,8 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class StudentStatus extends Model
 {
+      protected $fillable = [
+         'name'
+    ];
+
     public function students() 
     {
-        return $this->hasMany(student::class, 'status_id');
+        return $this->hasMany(student::class);
     }
 }
