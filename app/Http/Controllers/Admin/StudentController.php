@@ -17,19 +17,38 @@ class StudentController extends Controller
         return view('admin.student.index');
     }
 
-    public function getStudents() 
-    {
-       return DataTables::of(User::query())
+   public function getStudents() 
+{
+    return DataTables::of(User::query())
         ->addIndexColumn()
-      ->addColumn('action', function($row){
-        return '<a href="'.route('students.edit', $row->id).'" 
-                class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
-                Edit
-                </a>';
-            })
+        ->addColumn('action', function($row){
+            // Generate URLs for edit and delete
+            $editUrl = route('students.edit', $row->id);
+            $deleteUrl = route('students.destroy', $row->id);
+
+            // Return HTML with both buttons
+            return '
+                <a href="'.$editUrl.'" 
+                    class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    Edit
+                </a>
+
+                <form action="'.$deleteUrl.'" method="POST" 
+                    style="display:inline-block;"
+                    onsubmit="return confirm(\'Are you sure you want to delete this student?\')">
+                    '.csrf_field().'
+                    '.method_field("DELETE").'
+                    <button type="submit" 
+                        class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">
+                        Delete
+                    </button>
+                </form>
+            ';
+        })
         ->rawColumns(['action'])
         ->make(true);
-    }
+}
+
 
     /**
      * Show the form for creating a new resource.
