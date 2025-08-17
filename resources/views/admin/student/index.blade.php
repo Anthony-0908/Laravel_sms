@@ -1,89 +1,80 @@
 <x-app-layout>
     <div class="p-6" x-data="studentForm()">
-        <!-- Button to open the modal -->
-        <div class="w-full bg-gray-200">
-            <button @click="open = true" class="bg-blue-600 text-white px-4 py-2 rounded">
-            Register New Student
-            </button>
-        </div>
         
+        <!-- Top Bar -->
+        <div class="card flex justify-between items-center mb-6">
+            <h1 class="text-xl font-semibold text-gray-700">Students</h1>
+            <a href="{{ route('students.create') }}"
+                class="btn-primary">
+                    Register New Student
+            </a>
+        </div>
 
-        @include('admin.student.create-student') {{-- This has the modal HTML --}}
-    
+        {{-- <!-- Include Modal -->
+        @include('admin.student.create') --}}
 
         <!-- Success Message -->
         <template x-if="successMessage">
-            <div class="mt-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded" 
-                 x-text="successMessage">
+            <div 
+                class="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-green-700 shadow-sm"
+                x-text="successMessage">
             </div>
         </template>
 
-    <div class="w-full flex items-center justify-center min-h-screen p-6">
-        <table id="users-table" class="min-w-full h-full divide-y divide-gray-200 border w-full border-gray-300 rounded-md shadow-sm">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">#</th>
-                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Name</th>
-                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</th>
-                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Action</th>
-            </tr>
-        </thead>
-    <tbody class="bg-white divide-y divide-gray-200"></tbody>
-</table>
-    </div>
+        <!-- Data Table Card -->
+        <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+            <table id="studentsTable" class="min-w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">#</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Name</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Email</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100"></tbody>
+            </table>
+        </div>
 
     </div>
 
-    <!-- AlpineJS Component Script -->
+    <!-- DataTables Script -->
     <script>
-   $('#users-table').DataTable({
-    processing: true,
-    serverSide: true,
-    ajax: '{{ route('students.data') }}',
-    columns: [
-        { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-        { data: 'names', name: 'name' },
-        { data: 'email', name: 'email' },
-        { data: 'action', name: 'action', orderable: false, searchable: false },
-    ],
-    dom: 'rt<"flex justify-between items-center mt-4"ip>',
-});
-
-        function studentForm() {
-            return {
-                open: false,
-                successMessage: '',
-                form: {
-                    name: '',
-                    email: '',
-                    password: '',
-                    student_id: ''
+        document.addEventListener("DOMContentLoaded", () => {
+            let dt = new DataTable('#studentsTable', {
+                processing: true,
+                serverSide: true,
+                ajax: '{{ route('students.data') }}',
+                columns: [
+                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+                    { data: 'name', name: 'name' },
+                    { data: 'email', name: 'email' },
+                    { data: 'action', name: 'action', orderable: false, searchable: false },
+                ],
+                dom: '<"flex justify-between items-center mb-4"lf>rt<"flex justify-between items-center mt-4"ip>',
+                stripeClasses: [],
+                createdRow: (row) => {
+                    $(row).addClass('hover:bg-gray-50');
+                    $('td', row).addClass('px-4 py-3');
                 },
-                async submitForm() {
-                    try {
-                        const response = await fetch("{{ route('students.store') }}", {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify(this.form)
-                        });
-
-                        if (!response.ok) throw new Error('Failed to register student');
-
-                        const result = await response.json();
-                        this.successMessage = result.message || 'Student registered successfully.';
-                        this.open = false;
-
-                        this.form = { name: '', email: '', password: '', student_id: '' };
-
-                    } catch (error) {
-                        console.error(error);
-                        alert('There was an error submitting the form.');
-                    }
+                headerCallback: (thead) => {
+                    $(thead).find('th').addClass('px-4 py-3');
                 }
-            };
-        }
+            });
+
+            // Style controls with Tailwind
+            function styleControls() {
+                $('.dt-length select').addClass('rounded-lg border border-gray-300 bg-white px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-500');
+                $('.dt-search input').addClass('rounded-lg border border-gray-300 bg-white px-3 py-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500');
+                $('.dt-info').addClass('text-sm text-gray-500');
+                $('.dt-paging button')
+                    .addClass('rounded-lg border border-gray-300 bg-white px-3 py-1 text-sm shadow-sm hover:bg-gray-50')
+                    .filter('.current')
+                    .addClass('bg-indigo-600 text-white border-transparent');
+            }
+
+            styleControls();
+            dt.on('draw', styleControls);
+        });
     </script>
 </x-app-layout>
