@@ -32,6 +32,7 @@ class UserFactory extends Factory
             'address' => fake()->address(),
             'phone_no' => fake()->numerify('09#########'), // e.g. 9123456789
             'gender' => $this->faker->randomElement(['M', 'F']), // 👈 enum faker data
+            'birthdate' => $this->faker->date(),
         ];
     }
 
