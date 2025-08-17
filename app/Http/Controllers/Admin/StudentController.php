@@ -21,9 +21,12 @@ class StudentController extends Controller
     {
        return DataTables::of(User::query())
         ->addIndexColumn()
-        ->addColumn('action', function($row){
-            return '<a href="/users/'.$row->id.'/edit" class="btn btn-sm btn-primary">Edit</a>';
-        })
+      ->addColumn('action', function($row){
+        return '<a href="'.route('students.edit', $row->id).'" 
+                class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
+                Edit
+                </a>';
+            })
         ->rawColumns(['action'])
         ->make(true);
     }
