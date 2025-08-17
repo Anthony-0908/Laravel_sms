@@ -33,37 +33,54 @@ class StudentController extends Controller
      */
     public function create()
     {
-        
+        return view('admin.student.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-  public function store(Request $request)
-{
-    // Validate and store
-    // $request->validate([
-    //     'name' => 'required|string|max:255',
-    //     'email' => 'required|email|unique:users,email',
-    //     'password' => 'required|min:6',
-    //     'student_id' => 'required|string|unique:students,student_id',
-    // ]);
+   public function store(Request $request)
+    {
+        try {
+            $request->validate([
+                'name'       => 'required|string|max:255',
+                'email'      => 'required|email|unique:users,email',
+                'password'   => 'required|min:6',
+                'student_id' => 'required|string|unique:students,student_id',
+            ]);
 
-    // Create user and student record
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => bcrypt($request->password),
-    ]);
+            DB::beginTransaction();
 
-    $user = Student::create([
-        'student_id' => $request->student_id,
-    ]);
+            // Create user
+            $user = User::create([
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'password' => bcrypt($request->password),
+            ]);
 
-    return response()->json([
-        'message' => 'Student registered successfully!',
-    ]);
-}
+            // Create student linked to this user
+            $student = Student::create([
+                'user_id'    => $user->id,
+                'student_id' => $request->student_id,
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Student registered successfully',
+                'user'    => $user,
+                'student' => $student,
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Error registering student',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
+
 
 
     /**
@@ -71,24 +88,71 @@ class StudentController extends Controller
      */
     public function show(string $id)
     {
-        //
+         // Get user and related student
+        $user = User::with('student')->findOrFail($id);
+
+        return view('admin.student.show', compact('user'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+   public function edit(string $id)
     {
-        //
+        // Get user and related student
+        $user = User::with('student')->findOrFail($id);
+
+        return view('admin.student.update', compact('user'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        //
+  public function update(Request $request, string $id)
+{
+    try {
+        $request->validate([
+            'name'       => 'required|string|max:255',
+            'email'      => 'required|email|unique:users,email,'.$id,
+            'password'   => 'nullable|min:6', // only update if provided
+            'student_id' => 'required|string|unique:students,student_id,'.$id.',user_id',
+        ]);
+
+        DB::beginTransaction();
+
+        // Find user and related student
+        $user = User::findOrFail($id);
+        $student = Student::where('user_id', $id)->firstOrFail();
+
+        // Update user
+        $user->name  = $request->name;
+        $user->email = $request->email;
+        if ($request->filled('password')) {
+            $user->password = bcrypt($request->password);
+        }
+        $user->save();
+
+        // Update student
+        $student->student_id = $request->student_id;
+        $student->save();
+
+        DB::commit();
+
+        return response()->json([
+            'message' => 'Student updated successfully',
+            'user'    => $user,
+            'student' => $student,
+        ], 200);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json([
+            'message' => 'Error updating student',
+            'error'   => $e->getMessage(),
+        ], 500);
     }
+}
+
 
     /**
      * Remove the specified resource from storage.
