@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->string('phone_no')->nullable();
             $table->enum('gender',['M','F']);
+            $table->date('birthdate');   // required
             // $table->enum('user_type',['admin','teacher','student','employee']);
             $table->rememberToken();
             $table->timestamps();
