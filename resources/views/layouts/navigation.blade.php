@@ -8,6 +8,9 @@
                     <a href="{{ route('dashboard') }}">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
                     </a>
+
+                    <a href="{{ route('students.index') }}">
+                        <span class="text-gray-800 dark:text-gray-200 ms-3 text-lg font-semibold">Student Management</span>
                 </div>
 
                 <!-- Navigation Links -->
