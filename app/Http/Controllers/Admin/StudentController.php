@@ -7,8 +7,16 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Student;
 use Yajra\DataTables\DataTables;
+
+use App\Services\StudentService;
 class StudentController extends Controller
 {
+    protected $studentService;
+
+    public function __construct(StudentService $studentService)
+    {
+        $this->studentService = $studentService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -19,18 +27,25 @@ class StudentController extends Controller
 
    public function getStudents() 
 {
-    return DataTables::of(User::query())
+     $students = $this->studentService->getAllStudents();
+    return DataTables::of($students)
         ->addIndexColumn()
         ->addColumn('action', function($row){
             // Generate URLs for edit and delete
             $editUrl = route('students.edit', $row->id);
             $deleteUrl = route('students.destroy', $row->id);
+            $showUrl = route('students.show' , $row->id);
 
             // Return HTML with both buttons
             return '
                 <a href="'.$editUrl.'" 
                     class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
                     Edit
+                </a>
+
+                <a href="'.$showUrl.'"
+                    class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    Show
                 </a>
 
                 <form action="'.$deleteUrl.'" method="POST" 
@@ -77,6 +92,10 @@ class StudentController extends Controller
             $user = User::create([
                 'name'     => $request->name,
                 'email'    => $request->email,
+                'address' => $request->address,
+                'phone_no' => $request->phone_no,
+                'birthdate' => $request->birthdate,
+                
                 'password' => bcrypt($request->password),
             ]);
 
@@ -84,6 +103,10 @@ class StudentController extends Controller
             $student = Student::create([
                 'user_id'    => $user->id,
                 'student_id' => $request->student_id,
+                'grade' => $request->grade,
+                'section' => $request->section,
+                'enrollment_date' => $request->enrollment_date,
+                'status_id' => $request->status_id,
             ]);
 
             DB::commit();
