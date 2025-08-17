@@ -45,10 +45,10 @@
                 processing: true,
                 serverSide: true,
                 ajax: '{{ route('students.data') }}',
-                columns: [
+              columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                    { data: 'name', name: 'name' },
-                    { data: 'email', name: 'email' },
+                    { data: 'user.name', name: 'user.name' },
+                    { data: 'user.email', name: 'user.email' },
                     { data: 'action', name: 'action', orderable: false, searchable: false },
                 ],
                 dom: '<"flex justify-between items-center mb-4"lf>rt<"flex justify-between items-center mt-4"ip>',
