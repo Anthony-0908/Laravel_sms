@@ -3,12 +3,13 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\User;
+use App\Models\Student; // 👈 import the model
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Student>
- */
 class StudentFactory extends Factory
 {
+    protected $model = Student::class;
+
     public function definition(): array
     {
         return [
@@ -16,9 +17,15 @@ class StudentFactory extends Factory
             'grade' => $this->faker->randomElement(['7', '8', '9', '10']),
             'section' => $this->faker->randomLetter(),
             'enrollment_date' => $this->faker->date(),
-            'status_id'=> 1,
-            // Assuming 'user_id' is a foreign key to the 'users' table
-            'user_id' => \App\Models\User::factory(), 
+            'status_id' => 1,
+            'user_id' => User::factory(),
         ];
+    }
+
+    public function configure()
+    {
+        return $this->afterCreating(function (Student $student) {
+            $student->user->assignRole('student');
+        });
     }
 }
