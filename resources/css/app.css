@@ -2,7 +2,57 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Pagination buttons */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  background-color: white;
+  border: 1px solid #d1d5db; /* gray-300 */
+  color: #374151; /* gray-700 */
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  margin: 0 0.25rem;
+  cursor: pointer;
+}
 
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  background-color: #2563eb; /* blue-600 */
+  color: white;
+  border-color: transparent;
+}
+
+/* Info text */
+.dataTables_wrapper .dataTables_info {
+  color: #4b5563; /* gray-600 */
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+/* Length dropdown & search input */
+.dataTables_wrapper select,
+.dataTables_wrapper input {
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  padding: 0.25rem 0.5rem;
+  margin-left: 0.5rem;
+}
+
+/* Table row hover */
 #users-table tbody tr:hover {
-    background-color: #f9fafb; /* Tailwind’s gray-50 */
+  background-color: #f9fafb; /* gray-50 */
+}
+
+.btn {
+  @apply px-4 py-2 rounded-lg font-medium transition duration-200;
+}
+
+.btn-primary {
+  @apply btn bg-blue-600 text-white hover:bg-blue-700;
+}
+
+.btn-secondary {
+  @apply btn bg-gray-300 text-gray-800 hover:bg-gray-400;
+}
+
+.card{
+  @apply bg-gray-100 shadow-md rounded-lg p-6 mb-6;
 }
