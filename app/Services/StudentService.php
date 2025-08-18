@@ -25,5 +25,10 @@ class StudentService
     {
         return $this->student->with('user', 'status')->get();   
     }
+
+    public function getStudentStatus()
+    {
+        return $this->studentstatus->pluck('name', 'id');
+    }
 }
 ?>
