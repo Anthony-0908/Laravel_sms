@@ -33,8 +33,8 @@ class StudentController extends Controller
             ->addColumn('action', function($row){
                 // Generate URLs for edit and delete
                 $editUrl = route('students.edit', $row->id);
-                $deleteUrl = route('students.destroy', $row->id);
-                $showUrl = route('students.show' , $row->id);
+                $deleteUrl = route('students.destroy', $row->user_id);
+                $showUrl = route('students.show' , $row->user_id);
 
                 // Return HTML with both buttons
                 return '
