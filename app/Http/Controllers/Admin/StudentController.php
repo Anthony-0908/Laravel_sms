@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Student;
 use Yajra\DataTables\DataTables;
-
+use Illuminate\Support\Facades\DB;
 use App\Services\StudentService;
 class StudentController extends Controller
 {
@@ -26,43 +26,43 @@ class StudentController extends Controller
     }
 
    public function getStudents() 
-{
-     $students = $this->studentService->getAllStudents();
-    return DataTables::of($students)
-        ->addIndexColumn()
-        ->addColumn('action', function($row){
-            // Generate URLs for edit and delete
-            $editUrl = route('students.edit', $row->id);
-            $deleteUrl = route('students.destroy', $row->id);
-            $showUrl = route('students.show' , $row->id);
+    {
+        $students = $this->studentService->getAllStudents();
+        return DataTables::of($students)
+            ->addIndexColumn()
+            ->addColumn('action', function($row){
+                // Generate URLs for edit and delete
+                $editUrl = route('students.edit', $row->id);
+                $deleteUrl = route('students.destroy', $row->id);
+                $showUrl = route('students.show' , $row->id);
 
-            // Return HTML with both buttons
-            return '
-                <a href="'.$editUrl.'" 
-                    class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
-                    Edit
-                </a>
+                // Return HTML with both buttons
+                return '
+                    <a href="'.$editUrl.'" 
+                        class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        Edit
+                    </a>
 
-                <a href="'.$showUrl.'"
-                    class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
-                    Show
-                </a>
+                    <a href="'.$showUrl.'"
+                        class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        Show
+                    </a>
 
-                <form action="'.$deleteUrl.'" method="POST" 
-                    style="display:inline-block;"
-                    onsubmit="return confirm(\'Are you sure you want to delete this student?\')">
-                    '.csrf_field().'
-                    '.method_field("DELETE").'
-                    <button type="submit" 
-                        class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">
-                        Delete
-                    </button>
-                </form>
-            ';
-        })
-        ->rawColumns(['action'])
-        ->make(true);
-}
+                    <form action="'.$deleteUrl.'" method="POST" 
+                        style="display:inline-block;"
+                        onsubmit="return confirm(\'Are you sure you want to delete this student?\')">
+                        '.csrf_field().'
+                        '.method_field("DELETE").'
+                        <button type="submit" 
+                            class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">
+                            Delete
+                        </button>
+                    </form>
+                ';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
 
 
     /**
@@ -70,7 +70,8 @@ class StudentController extends Controller
      */
     public function create()
     {
-        return view('admin.student.create');
+        $studentStatus = $this->studentService->getStudentStatus();
+        return view('admin.student.create', compact('studentStatus') );
     }
 
     /**
@@ -83,6 +84,9 @@ class StudentController extends Controller
                 'name'       => 'required|string|max:255',
                 'email'      => 'required|email|unique:users,email',
                 'password'   => 'required|min:6',
+                'address'    => 'nullable|string|max:255',
+                'phone_no'   => 'nullable|string|max:15',
+                'birthdate'  => 'required|date',
                 'student_id' => 'required|string|unique:students,student_id',
             ]);
 
@@ -95,7 +99,6 @@ class StudentController extends Controller
                 'address' => $request->address,
                 'phone_no' => $request->phone_no,
                 'birthdate' => $request->birthdate,
-                
                 'password' => bcrypt($request->password),
             ]);
 
