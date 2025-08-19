@@ -14,7 +14,7 @@ Route::get('/dashboard', function () {
 
 Route::get('/student',[StudentController::class,'index']);
 
-Route::middleware('auth')->group(function() {
+Route::middleware('role:admin')->group(function() {
     Route::get('/student',[StudentController::class,'index'])->name('students.index');
     Route::get('/students',[StudentController::class,'getStudents'])->name('students.data');
     Route::get('/students-create',[StudentController::class,'create'])->name('students.create');
