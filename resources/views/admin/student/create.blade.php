@@ -191,6 +191,22 @@
     </div>
 
     <script>
+
+        const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+        }
+        });
+        // Toast.fire({
+        // icon: "success",
+        // title: "Signed inadfsdf successfully"
+        // });
         function studentForm() {
             return {
                 successMessage: '',
@@ -210,38 +226,66 @@
                     student_id: '',
                     status_id: '{{ $studentStatus->flip()["Enrolled"] ?? "" }}'
                 },
-                async submitForm() {
-                    try {
-                        const response = await fetch("{{ route('students.store') }}", {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify(this.form)
-                        });
+              async submitForm() {
+            try {
+                const response = await fetch("{{ route('students.store') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify(this.form)
+                });
 
-                        if (response.status === 422) {
-                            const result = await response.json();
-                            this.errors = result.errors; // Laravel validation errors
-                            return;
-                        }
+                if (response.status === 422) {
+                    const result = await response.json();
+                    this.errors = result.errors; // Laravel validation errors
 
-                        if (!response.ok) throw new Error('Failed to register student');
-
-                        const result = await response.json();
-                        this.successMessage = result.message || 'Student registered successfully.';
-
-                        // clear form and errors
-                        this.form = { name: '', email: '', password: '', student_id: '' };
-                        this.errors = {};
-
-                    } catch (error) {
-                        console.error(error);
-                        alert('There was an error submitting the form.');
-                    }
+                    Toast.fire({
+                        icon: "error",
+                        title: "Please fix the validation errors."
+                    });
+                    return;
                 }
-            };
+
+                if (!response.ok) throw new Error('Failed to register student');
+
+                const result = await response.json();
+                this.successMessage = result.message || 'Student registered successfully.';
+
+                Toast.fire({
+                    icon: "success",
+                    title: this.successMessage
+                });
+
+                // clear form and errors
+                this.form = {
+                    name: '',
+                    email: '',
+                    phone_no: '',
+                    gender: '',
+                    birthdate: '',
+                    address: '',
+                    password: '',
+                    confirm_password: '',
+                    grade: '',
+                    section: '',
+                    enrollment_date: '',
+                    student_id: '',
+                    status_id: '{{ $studentStatus->flip()["Enrolled"] ?? "" }}'
+                };
+                this.errors = {};
+
+            } catch (error) {
+                console.error(error);
+                Toast.fire({
+                    icon: "error",
+                    title: "There was an error submitting the form."
+                });
+            }
         }
+
+    };
+}
     </script>
 </x-app-layout>
