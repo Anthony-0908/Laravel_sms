@@ -11,7 +11,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        // Alias your middleware for route usage
+        $middleware->alias([
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
+        ]);
+
+        // You can also append global middleware or add to groups if needed
+        // $middleware->append(\App\Http\Middleware\SomeOtherMiddleware::class);
+        // $middleware->appendToGroup('web', \App\Http\Middleware\RoleMiddleware::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
