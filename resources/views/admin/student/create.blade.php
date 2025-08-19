@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div x-data="studentForm()" class="max-w-2xl mx-auto mt-10 bg-white p-6 rounded-lg shadow-xl">
+    <div  class="max-w-2xl mx-auto mt-10 bg-white p-6 rounded-lg shadow-xl">
 
         <h2 class="text-2xl font-semibold mb-6">Register Student</h2>
 
