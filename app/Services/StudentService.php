@@ -30,5 +30,32 @@ class StudentService
     {
         return $this->studentstatus->pluck('name', 'id');
     }
+
+    public function studentCreate(array $data)
+    {
+        return DB::transaction(function () use ($data) {
+            // Create user
+            $user = User::create([
+                'name'     => $data['name'],
+                'email'    => $data['email'],
+                'address'  => $data['address'] ?? null,
+                'phone_no' => $data['phone_no'] ?? null,
+                'birthdate'=> $data['birthdate'],
+                'password' => bcrypt($data['password']),
+            ]);
+
+            // Create student
+            $student = Student::create([
+                'user_id'    => $user->id,
+                'student_id' => $data['student_id'],
+                'grade'      => $data['grade'],
+                'section'    => $data['section'],
+                'enrollment_date' => $data['enrollment_date'],
+                'status_id'  => $data['status_id'],
+            ]);
+
+            return [$user, $student];
+        });
+    }
 }
 ?>
