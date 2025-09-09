@@ -22,7 +22,17 @@ class StudentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name'       => 'required|string|max:255',
+            'email'      => 'required|email|unique:users,email',
+            'password'   => 'required|min:6',
+            'address'    => 'nullable|string|max:255',
+            'phone_no'   => 'nullable|string|max:15',
+            'birthdate'  => 'required|date',
+            'student_id' => 'required|string|unique:students,student_id',
+            'grade'      => 'required|string|max:50',
+            'section'    => 'required|string|max:50',
+            'enrollment_date' => 'required|date',
+            'status_id'  => 'required|integer|exists:statuses,id',
         ];
     }
 }
