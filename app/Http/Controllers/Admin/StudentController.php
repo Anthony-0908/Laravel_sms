@@ -9,6 +9,7 @@ use App\Models\Student;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 use App\Services\StudentService;
+use App\Http\Requests\StudentRequest;
 class StudentController extends Controller
 {
     protected $studentService;
@@ -77,57 +78,24 @@ class StudentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-   public function store(Request $request)
-    {
-        try {
-            $request->validate([
-                'name'       => 'required|string|max:255',
-                'email'      => 'required|email|unique:users,email',
-                'password'   => 'required|min:6',
-                'address'    => 'nullable|string|max:255',
-                'phone_no'   => 'nullable|string|max:15',
-                'birthdate'  => 'required|date',
-                'student_id' => 'required|string|unique:students,student_id',
-            ]);
+public function store(StoreStudentRequest $request, StudentService $studentService)
+{
+    try {
+        [$user, $student] = $studentService->create($request->validated());
 
-            DB::beginTransaction();
+        return response()->json([
+            'message' => 'Student registered successfully',
+            'user'    => $user,
+            'student' => $student,
+        ], 201);
 
-            // Create user
-            $user = User::create([
-                'name'     => $request->name,
-                'email'    => $request->email,
-                'address' => $request->address,
-                'phone_no' => $request->phone_no,
-                'birthdate' => $request->birthdate,
-                'password' => bcrypt($request->password),
-            ]);
-
-            // Create student linked to this user
-            $student = Student::create([
-                'user_id'    => $user->id,
-                'student_id' => $request->student_id,
-                'grade' => $request->grade,
-                'section' => $request->section,
-                'enrollment_date' => $request->enrollment_date,
-                'status_id' => $request->status_id,
-            ]);
-
-            DB::commit();
-
-            return response()->json([
-                'message' => 'Student registered successfully',
-                'user'    => $user,
-                'student' => $student,
-            ], 201);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'message' => 'Error registering student',
-                'error'   => $e->getMessage()
-            ], 500);
-        }
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Error registering student',
+            'error'   => $e->getMessage()
+        ], 500);
     }
+}
 
 
 
